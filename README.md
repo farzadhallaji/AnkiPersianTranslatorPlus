@@ -1,6 +1,7 @@
-# PersianDeckEnhancer-Anki
+# AnkiPersianTranslatorPlus
 
-Enhance your Anki decks with comprehensive Persian translations, synonyms, and more from Google Translate and Tahlilgaran. This Anki add-on is designed to enrich your language learning by seamlessly integrating advanced translation features directly within your Anki experience.
+Enhance your language learning with AnkiPersianTranslatorPlus, a powerful Anki add-on designed for learners and enthusiasts of the Persian language. This add-on leverages Google Translate and Tahlilgaran dictionary to provide comprehensive translations, synonyms, definitions, and example sentences directly within Anki, making it easier than ever to build and review your Persian vocabulary.
+
 
 ## Features
 
