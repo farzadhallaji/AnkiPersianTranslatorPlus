@@ -1,33 +1,32 @@
-# Simple Add-on for Anki
+# PersianDeckEnhancer-Anki
 
-This repository hosts a simple yet powerful add-on for Anki, designed to enhance your language learning experience by leveraging the capabilities of Google Translate and the Tahlilgaran dictionary. It seamlessly integrates with Anki, providing users with translations, synonyms, definitions, and example sentences to help memorize and understand new vocabulary more effectively.
+Enhance your Anki decks with comprehensive Persian translations, synonyms, and more from Google Translate and Tahlilgaran. This Anki add-on is designed to enrich your language learning by seamlessly integrating advanced translation features directly within your Anki experience.
 
 ## Features
 
-- **Translation Support**: Utilize Google Translate and Tahlilgaran for comprehensive translations.
-- **Enhanced Learning Tools**: Access synonyms, definitions, and examples to deepen your understanding of new words.
-- **Customizable Settings**: Tailor the add-on's behavior to suit your learning preferences.
-- **Easy Integration**: Designed to work seamlessly with Anki's deck and card structure.
+- **Persian Translations**: Access high-quality Persian translations for your flashcards.
+- **Synonyms and Definitions**: Deepen your understanding of new words with synonyms and definitions from Google Translate.
+- **Example Sentences**: Learn how words are used in context with example sentences.
+- **Seamless Integration**: Easily integrates with your existing Anki decks, enhancing your study sessions without disrupting your workflow.
 
 ## Installation
 
-To install the add-on:
-
-1. Clone this repository or download the ZIP file.
-2. Extract the content if you've downloaded a ZIP file.
-3. Copy the extracted folder into your Anki add-ons directory. The location of this directory varies by operating system:
+1. Clone or download this repository.
+2. Locate the Anki add-ons folder on your computer:
    - **Windows**: `%APPDATA%\Anki2\addons21\`
    - **Mac**: `~/Library/Application Support/Anki2/addons21/`
    - **Linux**: `~/.local/share/Anki2/addons21/`
-4. Restart Anki, and you should see the add-on listed under **Tools > Add-ons**.
+3. Copy the downloaded folder into the Anki add-ons directory.
+4. Restart Anki, and the add-on will be available under **Tools > Persian Translate google+tahlilgaran**.
 
 ## Usage
 
-After installation, access the add-on's functionalities via **Tools > Persian Translate google+tahlilgaran** in Anki. To use the translation feature:
+To use PersianDeckEnhancer-Anki:
 
-1. Open the translation dialog from the menu.
-2. Select the deck and specify the source and target fields for translation.
-3. Click "Translate" to begin the translation process across your selected deck.
+1. Navigate to **Tools > Persian Translate google+tahlilgaran** within Anki.
+2. Select your target deck and specify the fields for translation.
+3. Click "Translate" to apply Persian translations, synonyms, and example sentences to your deck.
+
 
 ## Contributing
 
