@@ -6,17 +6,17 @@ from functools import partial
 import re
 import argparse
 from bs4 import BeautifulSoup
-import logging
 from aqt import mw
-from anki.hooks import addHook
 import time 
 from aqt.utils import showInfo, qconnect
 from aqt.qt import *
-from aqt.qt import QAction
+from aqt.utils import showInfo, getText, showWarning
+from aqt.qt import QAction, qconnect
+from aqt.progress import ProgressManager
+from PyQt6.QtWidgets import QProgressDialog
+from PyQt6.QtCore import Qt
+from aqt.qt import QAction, QDialog, QVBoxLayout, QLabel, QComboBox, QLineEdit, QPushButton
 
-
-logging.basicConfig(filename='anki_addon.log', filemode='w', level=logging.DEBUG,
-                    format='%(asctime)s - %(levelname)s - %(message)s')
 
 class Token:
     """
@@ -229,56 +229,103 @@ def get_args(target='fa', query='', host='translate.googleapis.com', proxy='', a
 
 
 async def translate_async(word, target_language='fa'):
-    # Assuming GoogleTranslate and get_args are defined elsewhere
     args = get_args(query=word, target=target_language)
     g_trans = GoogleTranslate(args)
     trans = await g_trans.get_translation(target_language, word, tkk=args.tkk)
     return trans
 
 async def translate_word_async(word):
-    # Assuming translate_word is an existing synchronous function
     from_google_task = asyncio.create_task(translate_async(word))
     from_google = await from_google_task
     translation = translate_word(word)  # Synchronous translation function
     return f'\n{from_google}......\n{translation}'
 
+
+
+class TranslationDialog(QDialog):
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self.setWindowTitle("Select Deck and Fields for Translation")
+        self.setupUi()
+
+    def setupUi(self):
+        layout = QVBoxLayout(self)
+
+        # Deck selection
+        self.deckLabel = QLabel("Select Deck:")
+        self.deckComboBox = QComboBox()
+        self.decks = mw.col.decks.all_names()
+        self.deckComboBox.addItems(self.decks)
+
+        # Source field input
+        self.sourceFieldLabel = QLabel("Source Field:")
+        self.sourceFieldInput = QLineEdit()
+
+        # Target field input
+        self.targetFieldLabel = QLabel("Target Field:")
+        self.targetFieldInput = QLineEdit()
+
+        # Submit button
+        self.submitButton = QPushButton("Translate")
+        self.submitButton.clicked.connect(self.accept)
+
+        layout.addWidget(self.deckLabel)
+        layout.addWidget(self.deckComboBox)
+        layout.addWidget(self.sourceFieldLabel)
+        layout.addWidget(self.sourceFieldInput)
+        layout.addWidget(self.targetFieldLabel)
+        layout.addWidget(self.targetFieldInput)
+        layout.addWidget(self.submitButton)
+
+    def getInputs(self):
+        return (self.deckComboBox.currentText(), self.sourceFieldInput.text(), self.targetFieldInput.text())
+
+   
 def apply_translation_to_deck(deck_name, source_field, target_field):
     deck_id = mw.col.decks.id(deck_name)
     mw.col.decks.select(deck_id)
+    card_ids = mw.col.find_cards(f'"deck:{deck_name}"')
     
-    for cid in mw.col.find_cards(f'"deck:{deck_name}"'):
+    # Create and configure the progress dialog
+    progressDialog = QProgressDialog("Translating cards...", "Abort", 0, len(card_ids), mw)
+    progressDialog.setWindowModality(Qt.WindowModality.WindowModal)
+    progressDialog.setMinimumDuration(0)  # Show immediately
+    progressDialog.setAutoClose(True)
+
+    for idx, cid in enumerate(card_ids):
+        if progressDialog.wasCanceled():
+            break  # Stop if the user cancels the operation
+        
         card = mw.col.get_card(cid)
         note = card.note()
         
         if source_field in note and target_field in note:
             source_text = note[source_field]
-            
             if not '---------' in note[target_field]:
-                # Execute asynchronous translation
                 loop = asyncio.get_event_loop()
                 result = loop.run_until_complete(translate_word_async(source_text))
-                time.sleep(2)  # Consider removing or adjusting this based on actual requirements
-                note[target_field] = f"{note[target_field]} {result}"  
+                note[target_field] = f"{note[target_field]} {result}"
                 note.flush()
-                #showInfo(f"source_text: {source_text}")
                 
+        progressDialog.setValue(idx + 1)  # Update the progress dialog
+
+    progressDialog.setValue(len(card_ids))  # Ensure the progress reaches 100%
     showInfo(f"Processed deck: {deck_name}")
 
-def test_function():
-    card_count = mw.col.cardCount()
-    showInfo(f"Card count: {card_count}")
-    try:
-        apply_translation_to_deck("1212 - 3rd edition TOEFL Vocab for Hardworkers", "Word", "Persian")
-    except Exception as e:
-        showInfo(f"Exception during translation: {e}")
 
-# Add menu item to Anki
+def showDialog():
+    dialog = TranslationDialog(mw)
+    if dialog.exec():  
+        deck_name, source_field, target_field = dialog.getInputs()
+        try:
+            apply_translation_to_deck(deck_name, source_field, target_field)
+            showInfo(f"Translation applied to deck: {deck_name}")
+        except Exception as e:
+            showInfo(f"Exception during translation: {e}")
+
 def add_menu_item():
     action = QAction("Persian Translate google+tahlilgaran", mw)
-    qconnect(action.triggered, test_function)
+    action.triggered.connect(showDialog)
     mw.form.menuTools.addAction(action)
 
 add_menu_item()
-
-
-
