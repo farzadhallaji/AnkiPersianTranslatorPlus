@@ -43,6 +43,12 @@ This project is open-source and available under the [MIT License](https://openso
 
 ## Acknowledgments
 
-- Thanks to Google Translate for providing a powerful translation API.
-- Gratitude to Tahlilgaran for their comprehensive Persian dictionary.
-- Appreciation to the Anki and its community for their invaluable resources and support in creating educational tools.
+This project makes use of code or inspiration from the following sources:
+
+- **[Google Translate for GoldenDict](https://github.com/xinebf/google-translate-for-goldendict)**: Portions of this project are based on or inspired by the `google-translate-for-goldendict` repository. We extend our sincere thanks to [xinebf](https://github.com/xinebf) and all contributors to that project for their valuable work.
+
+I also want to thank:
+
+- Google Translate for providing the powerful translation API.
+- Tahlilgaran for their extensive Persian dictionary.
+- The Anki community for their invaluable resources and support in creating educational tools.
